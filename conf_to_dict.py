@@ -1,16 +1,24 @@
 """
-Convert Cisco ISO to a dictionary
+Convert Cisco ISO config to a python dictionary
 The idea is that a dictionary has hashes of key/value pairs
-which will be very fast to perform auditing against.
+which will be very fast to perform config auditing against.
 version: 0.1
 TO-DO: So many things
 """
+
 
 class ConfToDict(object):
     """
     Convert Cisco IOS config to a python dictionary
     """
+
     def __init__(self, full_config, delimiter='\n', from_file=False):
+        """
+        Initialization method
+        :param full_config: Either a mulit-line string or a path to a file
+        :param delimiter: Delimiter used to split the lines
+        :param from_file: Set to true if config is coming from a file
+        """
         self.full_config = full_config
         self.delimiter = delimiter
         self.from_file = from_file
@@ -64,6 +72,7 @@ class ConfToDict(object):
         third_level = []
 
         for i in numbered_config:
+            # The number of spaces at the start of the line indicates the child level
             child_level = len(i[1]) - len(i[1].lstrip(' '))
             if not i[1].startswith(' '):
                 zero_level.append(i)
@@ -94,6 +103,7 @@ class ConfToDict(object):
                 parent_index = zero_level[zero_level.index(i)][0]
                 next_parent_index = zero_level[next_element][0]
 
+                # find child elements between parent elements
                 first_level_children = ConfToDict.find_children(first_level, parent_index, next_parent_index)
                 second_level_children = ConfToDict.find_children(second_level, parent_index, next_parent_index)
                 third_level_children = ConfToDict.find_children(third_level, parent_index, next_parent_index)
