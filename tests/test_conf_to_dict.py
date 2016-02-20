@@ -32,6 +32,6 @@ class TestConfToDict(unittest.TestCase):
         from ..conf_to_dict import ConfToDict
         self.assertRaises(FileNotFoundError, ConfToDict, 'tests/no_file.txt', from_file=True)
 
-    def test_no_elements_in_config_list_statrtwith_comments_or_new_line_chars(self):
+    def test_no_elements_in_config_list_startswith_comments_or_new_line_chars(self):
         for i in self.c.config:
             self.assertNotEquals(i, (i.startswith('!') or i.startswith(' !\n') or i.startswith('\n')))
