@@ -116,7 +116,7 @@ class ConfToDict(object):
                     else:
                         conf_dict.update({i[1]: children})
 
-                elif third_level_children and second_level_children:
+                elif second_level_children and third_level_children:
                     # multiple children at different levels 1 child per level
                     # level 0
                     #  level 1
