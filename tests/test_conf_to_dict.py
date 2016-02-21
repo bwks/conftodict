@@ -13,6 +13,34 @@ boot-end-marker
 logging buffered 16384
 !'''
 
+three_level = '''!
+policy-map QOS_CATEGORIES
+ class QOS_VOICE_RTP
+  priority percent 20
+  set ip dscp ef
+ class QOS_ROUTING
+  bandwidth percent 1
+  set ip dscp cs6
+ class QOS_MGMT
+  bandwidth percent 1
+  set ip dscp cs5
+ class QOS_BUSINESS_APPS
+  bandwidth percent 40
+  set ip dscp af41
+ class QOS_VIDEO_RTP
+  bandwidth percent 25
+  set ip dscp af31
+ class QOS_SIGNALLING
+  bandwidth percent 5
+  set ip dscp af31
+ class class-default
+  set ip dscp default
+  fair-queue
+  random-detect
+!
+end
+!'''
+
 
 class TestConfToDict(unittest.TestCase):
 
@@ -41,3 +69,11 @@ class TestConfToDict(unittest.TestCase):
         self.sc = ConfToDict(config)
         for i in self.sc.config:
             self.assertIsNot(i, (i.startswith('!') or i == ' !' or i == ''))
+
+    def test_three_level_hierarchy_contains_list_for_second_level(self):
+        from ..conf_to_dict import ConfToDict
+        self.three_level = ConfToDict(three_level)
+        conf_dict = self.three_level.conf_to_dict()
+
+        self.assertIsInstance(conf_dict['policy-map QOS_CATEGORIES'], list)
+
