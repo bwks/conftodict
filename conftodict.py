@@ -2,8 +2,8 @@
 Convert Cisco ISO config to a python dictionary
 The idea is that a dictionary has hashes of key/value pairs
 which will be very fast to perform config auditing against.
-version: 0.1
-TO-DO: Build test suite and work on edge cases
+version: 0.1.1
+TO-DO: Building test suite and work on edge cases
 """
 
 
