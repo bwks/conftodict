@@ -11,6 +11,8 @@ boot-end-marker
 !
 !
 logging buffered 16384
+!
+end
 !'''
 
 three_level = '''!
