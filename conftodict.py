@@ -60,7 +60,7 @@ class ConfToDict(object):
                 children.append(i)
         return children
 
-    def conf_to_dict(self):
+    def to_dict(self):
         """
         Convert a list of IOS config to a dictionary.
         :return: A dictionary of config elements
