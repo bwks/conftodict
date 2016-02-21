@@ -104,9 +104,12 @@ class ConfToDict(object):
                 next_parent_index = zero_level[next_element][0]
 
                 # find child elements between parent elements
-                first_level_children = ConfToDict.find_children(first_level, parent_index, next_parent_index)
-                second_level_children = ConfToDict.find_children(second_level, parent_index, next_parent_index)
-                third_level_children = ConfToDict.find_children(third_level, parent_index, next_parent_index)
+                first_level_children = ConfToDict.find_children(first_level, parent_index,
+                                                                next_parent_index)
+                second_level_children = ConfToDict.find_children(second_level, parent_index,
+                                                                 next_parent_index)
+                third_level_children = ConfToDict.find_children(third_level, parent_index,
+                                                                next_parent_index)
 
                 # Parent only has first level children
                 if not second_level_children:
@@ -122,9 +125,15 @@ class ConfToDict(object):
                     #  level 1
                     #   level 2
                     #    level 3
-                    if (len(first_level_children) and len(second_level_children) and len(third_level_children)) == 1:
-                        conf_dict.update({i[1]: {
-                            first_level_children[0][1]: {second_level_children[0][1]: third_level_children[0][1]}}})
+                    if (len(first_level_children) and len(second_level_children) and
+                            len(third_level_children)) == 1:
+                        conf_dict.update({
+                            i[1]: {
+                                first_level_children[0][1]: {
+                                    second_level_children[0][1]: third_level_children[0][1]
+                                }
+                            }
+                        })
 
                 elif second_level_children:
                     # multiple children at different levels 1 child per level
@@ -132,7 +141,11 @@ class ConfToDict(object):
                     #  level 1
                     #   level 2
                     if (len(first_level_children) and len(second_level_children)) == 1:
-                        conf_dict.update({i[1]: {first_level_children[0][1]: second_level_children[0][1]}})
+                        conf_dict.update({
+                            i[1]: {
+                                first_level_children[0][1]: second_level_children[0][1]
+                            }
+                        })
 
                     # multiple children at different levels 2 child levels
                     # level 0
