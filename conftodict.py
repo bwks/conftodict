@@ -15,7 +15,7 @@ class ConfToDict(object):
     def __init__(self, full_config, delimiter='\n', from_file=False):
         """
         Initialization method
-        :param full_config: Either a mulit-line string or a path to a file
+        :param full_config: Either a multi-line string or a path to a file
         :param delimiter: Delimiter used to split the lines
         :param from_file: Set to true if config is coming from a file
         """
