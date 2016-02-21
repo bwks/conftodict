@@ -75,7 +75,7 @@ class TestConfToDict(unittest.TestCase):
     def test_three_level_hierarchy_contains_list_for_second_level(self):
         from ..conftodict import ConfToDict
         self.three_level = ConfToDict(three_level)
-        conf_dict = self.three_level.conf_to_dict()
+        conf_dict = self.three_level.to_dict()
 
         self.assertIsInstance(conf_dict['policy-map QOS_CATEGORIES'], list)
 
