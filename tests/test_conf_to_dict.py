@@ -47,11 +47,11 @@ end
 class TestConfToDict(unittest.TestCase):
 
     def setUp(self):
-        from ..conf_to_dict import ConfToDict
+        from ..conftodict import ConfToDict
         self.c = ConfToDict('tests/test.txt', from_file=True)
 
     def test_constructor_with_config_as_string_builds_a_list_of_config(self):
-        from ..conf_to_dict import ConfToDict
+        from ..conftodict import ConfToDict
         self.sc = ConfToDict(config)
         self.assertIsInstance(self.sc.config, list)
 
@@ -59,7 +59,7 @@ class TestConfToDict(unittest.TestCase):
         self.assertIsInstance(self.c.config, list)
 
     def test_initialization_with_non_existent_file_raises_file_not_found_error(self):
-        from ..conf_to_dict import ConfToDict
+        from ..conftodict import ConfToDict
         self.assertRaises(FileNotFoundError, ConfToDict, 'tests/no_file.txt', from_file=True)
 
     def test_no_elements_in_config_list_from_file_startswith_comments_or_new_line_chars(self):
@@ -67,13 +67,13 @@ class TestConfToDict(unittest.TestCase):
             self.assertIsNot(i, (i.startswith('!') or i.startswith(' !\n') or i.startswith('\n')))
 
     def test_no_elements_in_config_list_from_string_startswith_comments_or_new_line_chars(self):
-        from ..conf_to_dict import ConfToDict
+        from ..conftodict import ConfToDict
         self.sc = ConfToDict(config)
         for i in self.sc.config:
             self.assertIsNot(i, (i.startswith('!') or i == ' !' or i == ''))
 
     def test_three_level_hierarchy_contains_list_for_second_level(self):
-        from ..conf_to_dict import ConfToDict
+        from ..conftodict import ConfToDict
         self.three_level = ConfToDict(three_level)
         conf_dict = self.three_level.conf_to_dict()
 
