@@ -104,12 +104,12 @@ class ConfToDict(object):
                 next_parent_index = zero_level[next_element][0]
 
                 # find child elements between parent elements
-                first_level_children = ConfToDict.find_children(first_level, parent_index,
-                                                                next_parent_index)
-                second_level_children = ConfToDict.find_children(second_level, parent_index,
-                                                                 next_parent_index)
-                third_level_children = ConfToDict.find_children(third_level, parent_index,
-                                                                next_parent_index)
+                first_level_children = self.find_children(first_level, parent_index,
+                                                          next_parent_index)
+                second_level_children = self.find_children(second_level, parent_index,
+                                                           next_parent_index)
+                third_level_children = self.find_children(third_level, parent_index,
+                                                          next_parent_index)
 
                 # Parent only has first level children
                 if not second_level_children:
