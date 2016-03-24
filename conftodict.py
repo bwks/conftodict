@@ -2,7 +2,7 @@
 Convert Cisco ISO config to a python dictionary
 The idea is that a dictionary has hashes of key/value pairs
 which will be very fast to perform config auditing against.
-version: 0.1.1
+version: 0.1.2
 TO-DO: Building test suite and work on edge cases
 """
 
@@ -92,13 +92,13 @@ class ConfToDict(object):
             if next_element == len(zero_level):
                 # end of top level parents
                 if i[0] > first_level[-1][0] and i[0] > second_level[-1][0]:
-                    conf_dict.update({i[1]: None})
+                    conf_dict.update({i[1]: []})
                 else:
                     print('last zero level parent has children')
 
             elif zero_level[next_element][0] - zero_level[zero_level.index(i)][0] == 1:
                 # element has no children
-                conf_dict.update({i[1]: None})
+                conf_dict.update({i[1]: []})
             else:
                 parent_index = zero_level[zero_level.index(i)][0]
                 next_parent_index = zero_level[next_element][0]
