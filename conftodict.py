@@ -2,8 +2,10 @@
 Convert Cisco ISO config to a python dictionary
 The idea is that a dictionary has hashes of key/value pairs
 which will be very fast to perform config auditing against.
-version: 0.1.3
-TO-DO: Building test suite and work on edge cases
+version: 0.1.4
+TO-DO: - Building test suite and work on edge cases
+       - Update to work with config with more than one space
+         between parent/child elements
 """
 
 
@@ -89,6 +91,9 @@ class ConfToDict(object):
         # Add banners to conf_dict
         for i in banners:
             conf_dict.update({'\n'.join([j for j in self.config[i[0]:i[1] + 1]]): []})
+
+        # Delete banners form self.config
+        for i in banners:
             del self.config[i[0]:i[1] + 1]
 
         numbered_config = [i for i in enumerate(self.config)]
