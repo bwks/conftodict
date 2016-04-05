@@ -12,16 +12,18 @@ class ConfToDict(object):
     Convert Cisco IOS config to a python dictionary
     """
 
-    def __init__(self, full_config, delimiter='\n', from_file=False):
+    def __init__(self, full_config, delimiter='\n', from_file=False, spaces=1):
         """
         Initialization method
         :param full_config: Either a multi-line string or a path to a file
         :param delimiter: Delimiter used to split the lines
         :param from_file: Set to true if config is coming from a file
+        :param spaces: Number of spaces for child indent
         """
         self.full_config = full_config
         self.delimiter = delimiter
         self.from_file = from_file
+        self.spaces = spaces
 
         # Clean config with a file as the input
         if self.from_file:
