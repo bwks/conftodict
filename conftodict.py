@@ -69,20 +69,18 @@ class ConfToDict(object):
         """
         conf_dict = {}
 
-        numbered_config = [i for i in enumerate(self.config)]
-
         # Find lines with banners and remove them from the config list
         banners = []
 
         # Find start of banner
-        for i in numbered_config:
-            if i[1].startswith('banner'):
-                banner_start = numbered_config.index(i)
-                terminator = i[1].split()[-1]
+        for i in self.config:
+            if i.startswith('banner'):
+                banner_start = self.config.index(i)
+                terminator = i.split()[-1]
 
                 # Find end of banner
                 sentinel = banner_start + 1
-                while not numbered_config[sentinel][1] == terminator:
+                while not self.config[sentinel] == terminator:
                     sentinel += 1
 
                 # Add start/finish of banner to banners list
@@ -90,8 +88,10 @@ class ConfToDict(object):
 
         # Add banners to conf_dict
         for i in banners:
-            conf_dict.update({'\n'.join([j[1] for j in numbered_config[i[0]:i[1] + 1]]): []})
-            del numbered_config[i[0]:i[1] + 1]
+            conf_dict.update({'\n'.join([j for j in self.config[i[0]:i[1] + 1]]): []})
+            del self.config[i[0]:i[1] + 1]
+
+        numbered_config = [i for i in enumerate(self.config)]
 
         zero_level = []
         first_level = []
