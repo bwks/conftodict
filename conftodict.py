@@ -2,7 +2,7 @@
 Convert Cisco ISO config to a python dictionary
 The idea is that a dictionary has hashes of key/value pairs
 which will be very fast to perform config auditing against.
-version: 0.1.2
+version: 0.1.3
 TO-DO: Building test suite and work on edge cases
 """
 
@@ -67,7 +67,32 @@ class ConfToDict(object):
         Convert a list of IOS config to a dictionary.
         :return: A dictionary of config elements
         """
+        conf_dict = {}
+
         numbered_config = [i for i in enumerate(self.config)]
+
+        # Find lines with banners and remove them from the config list
+        banners = []
+
+        # Find start of banner
+        for i in numbered_config:
+            if i[1].startswith('banner'):
+                banner_start = numbered_config.index(i)
+                terminator = i[1].split()[-1]
+
+                # Find end of banner
+                sentinel = banner_start + 1
+                while not numbered_config[sentinel][1] == terminator:
+                    sentinel += 1
+
+                # Add start/finish of banner to banners list
+                banners.append((banner_start, sentinel))
+
+        # Add banners to conf_dict
+        for i in banners:
+            conf_dict.update({'\n'.join([j[1] for j in numbered_config[i[0]:i[1] + 1]]): []})
+            del numbered_config[i[0]:i[1] + 1]
+
         zero_level = []
         first_level = []
         second_level = []
@@ -88,7 +113,6 @@ class ConfToDict(object):
                 print('More than 3 levels of nesting')
                 print(i)
 
-        conf_dict = {}
         for i in zero_level:
             next_element = zero_level.index(i) + 1
             if next_element == len(zero_level):
