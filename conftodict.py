@@ -108,13 +108,13 @@ class ConfToDict(object):
             child_level = len(i[1]) - len(i[1].lstrip(' '))
             if not i[1].startswith(' '):
                 zero_level.append(i)
-            elif child_level == 1:
+            elif child_level == 1 * self.spaces:
                 first_level.append((i[0], i[1].lstrip(' ')))
-            elif child_level == 2:
+            elif child_level == 2 * self.spaces:
                 second_level.append((i[0], i[1].lstrip(' ')))
-            elif child_level == 3:
+            elif child_level == 3 * self.spaces:
                 third_level.append((i[0], i[1].lstrip(' ')))
-            elif child_level > 3:
+            elif child_level > 3 * self.spaces:
                 print('More than 3 levels of nesting')
                 print(i)
 
@@ -144,11 +144,12 @@ class ConfToDict(object):
 
                 # Parent only has first level children
                 if not second_level_children:
+                    # level 0
+                    #  level 1
+                    #  level 1
+                    # output : {level 0: [level 1, level 1]}
                     children = [j[1] for j in first_level_children]
-                    if len(children) == 1:
-                        conf_dict.update({i[1]: children[0]})
-                    else:
-                        conf_dict.update({i[1]: children})
+                    conf_dict.update({i[1]: children})
 
                 elif second_level_children and third_level_children:
                     # multiple children at different levels 1 child per level
