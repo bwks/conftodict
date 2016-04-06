@@ -171,26 +171,33 @@ class ConfToDict(object):
                         })
 
                 elif second_level_children:
-                    # multiple children at different levels 1 child per level
-                    # level 0
-                    #  level 1
-                    #   level 2
                     if (len(first_level_children) and len(second_level_children)) == 1:
+                        # multiple children at different levels 1 child per level
+                        # level 0
+                        #  level 1
+                        #   level 2
+                        #
+                        # output: {level 0: {level 1: [level 2]}}
                         conf_dict.update({
                             i[1]: {
-                                first_level_children[0][1]: second_level_children[0][1]
+                                first_level_children[0][1]: [second_level_children[0][1]]
                             }
                         })
 
-                    # multiple children at different levels 2 child levels
-                    # level 0
-                    #  level 1
-                    #   level 2
-                    #   level 2
-                    #  level 1
-                    #   level 2
-                    #   level 2
                     else:
+                        # multiple children at different levels 2 child levels
+                        # level 0
+                        #  level 1
+                        #   level 2
+                        #   level 2
+                        #  level 1
+                        #   level 2
+                        #   level 2
+                        #
+                        # output: {level 0: [
+                        #               {level 1: [level 2, level 2]},
+                        #               {level 1: [level 2, level 2]}
+                        #               ]}
                         all_children = []
                         for j in first_level_children:
                             next_element = first_level_children.index(j) + 1
