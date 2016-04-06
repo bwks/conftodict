@@ -147,6 +147,7 @@ class ConfToDict(object):
                     # level 0
                     #  level 1
                     #  level 1
+                    #
                     # output : {level 0: [level 1, level 1]}
                     children = [j[1] for j in first_level_children]
                     conf_dict.update({i[1]: children})
@@ -157,12 +158,14 @@ class ConfToDict(object):
                     #  level 1
                     #   level 2
                     #    level 3
+                    #
+                    # output: {level 0: {level 1: {level 2: [level 3]}}}
                     if (len(first_level_children) and len(second_level_children) and
                             len(third_level_children)) == 1:
                         conf_dict.update({
                             i[1]: {
                                 first_level_children[0][1]: {
-                                    second_level_children[0][1]: third_level_children[0][1]
+                                    second_level_children[0][1]: [third_level_children[0][1]]
                                 }
                             }
                         })
