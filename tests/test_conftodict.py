@@ -26,7 +26,7 @@ policy-map QOS_CATEGORIES
  class QOS_MGMT
   bandwidth percent 1
   set ip dscp cs5
- class QOS_BUSINESS_APPS
+ class QOS_APPS
   bandwidth percent 40
   set ip dscp af41
  class QOS_VIDEO_RTP
