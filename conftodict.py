@@ -2,10 +2,13 @@
 Convert Cisco ISO config to a python dictionary
 The idea is that a dictionary has hashes of key/value pairs
 which will be very fast to perform config auditing against.
-version: 0.1.4
+
+Note: Config must be in the same format as it is from a show run
+
+version: 0.1.5
 TO-DO: - Building test suite and work on edge cases
        - Update to work with config with more than one space
-         between parent/child elements
+         between parent/child elements # Done need tests
 """
 
 
@@ -21,6 +24,8 @@ class ConfToDict(object):
         :param delimiter: Delimiter used to split the lines
         :param from_file: Set to true if config is coming from a file
         :param spaces: Number of spaces for child indent
+                       # IOS = 1
+                       # NXOS = 2
         """
         self.full_config = full_config
         self.delimiter = delimiter
@@ -92,9 +97,8 @@ class ConfToDict(object):
         for i in banners:
             conf_dict.update({'\n'.join([j for j in self.config[i[0]:i[1] + 1]]): []})
 
-        # Delete banners form self.config
-        for i in banners:
-            del self.config[i[0]:i[1] + 1]
+        # List holds a range of banner line numbers
+        banner_list = [i for j in [range(k[0], k[1] + 2) for k in banners] for i in j]
 
         numbered_config = [i for i in enumerate(self.config)]
 
@@ -104,19 +108,22 @@ class ConfToDict(object):
         third_level = []
 
         for i in numbered_config:
-            # The number of spaces at the start of the line indicates the child level
-            child_level = len(i[1]) - len(i[1].lstrip(' '))
-            if not i[1].startswith(' '):
-                zero_level.append(i)
-            elif child_level == 1 * self.spaces:
-                first_level.append((i[0], i[1].lstrip(' ')))
-            elif child_level == 2 * self.spaces:
-                second_level.append((i[0], i[1].lstrip(' ')))
-            elif child_level == 3 * self.spaces:
-                third_level.append((i[0], i[1].lstrip(' ')))
-            elif child_level > 3 * self.spaces:
-                print('More than 3 levels of nesting')
-                print(i)
+            if i[0] in banner_list:
+                pass
+            else:
+                # The number of spaces at the start of the line indicates the child level
+                child_level = len(i[1]) - len(i[1].lstrip(' '))
+                if not i[1].startswith(' '):
+                    zero_level.append(i)
+                elif child_level == 1 * self.spaces:
+                    first_level.append((i[0], i[1].lstrip(' ')))
+                elif child_level == 2 * self.spaces:
+                    second_level.append((i[0], i[1].lstrip(' ')))
+                elif child_level == 3 * self.spaces:
+                    third_level.append((i[0], i[1].lstrip(' ')))
+                elif child_level > 3 * self.spaces:
+                    print('More than 3 levels of nesting')
+                    print(i)
 
         for i in zero_level:
             next_element = zero_level.index(i) + 1
