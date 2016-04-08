@@ -1,6 +1,20 @@
 """
 Functions for performing config audit
+- Currently no tests
 """
+
+
+class AuditResult(object):
+    def __init__(self, ok=False, missing=None, error=None):
+        """
+        Helper class to return result
+        :param ok: True/False
+        :param missing: Missing entries
+        :param error: Error value
+        """
+        self.ok = ok
+        self.missing = missing
+        self.error = error
 
 
 def search_dict(dict_list, dict_key, value_list):
@@ -17,7 +31,9 @@ def search_dict(dict_list, dict_key, value_list):
     >>> c = ConfToDict('tests/test.txt', from_file=True)
     >>> stuff = c.to_dict()
     >>> things = ['priority percent 20', 'set ip dscp ef']
-    >>> search_dict(stuff['policy-map QOS_CATEGORIES'], 'class QOS_VOICE_RTP', things)
+    >>> blah = search_dict(stuff['policy-map QOS_CATEGORIES'], 'class QOS_VOICE_RTP', things)
+    >>> blah.ok
+    >>> True
     """
     found = []
     not_found = []
@@ -29,8 +45,8 @@ def search_dict(dict_list, dict_key, value_list):
                 else:
                     not_found.append(j)
             if not_found:
-                return False, not_found, 'dict_value'
+                return AuditResult(ok=False, missing=not_found, error='value(s) not found')
             else:
-                return True, 'all values found'
+                return AuditResult(ok=True)
         else:
-            return False, dict_key, 'dict_key'
+            return AuditResult(ok=False, missing=dict_key, error='key not found')
