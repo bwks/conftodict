@@ -1,0 +1,563 @@
+Building configuration...
+
+
+Current configuration : 13881 bytes
+!
+! Last configuration change at 00:17:54 AEST Wed Dec 9 2015 by jimbo
+! NVRAM config last updated at 00:17:56 AEST Wed Dec 9 2015 by jimbo
+! NVRAM config last updated at 00:17:56 AEST Wed Dec 9 2015 by jimbo
+version 15.2
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
+!
+hostname TESTR01
+!
+boot-start-marker
+boot-end-marker
+!
+!
+logging buffered 16384
+enable secret 4 4ascfbkKldsojnac
+!
+aaa new-model
+!
+!
+aaa authentication login TACACS group tacacs+ local
+aaa authentication login CONSOLE local
+aaa authentication enable default none
+aaa authorization config-commands
+aaa authorization commands 0 default group tacacs+ local
+aaa authorization commands 1 default group tacacs+ none
+aaa authorization commands 15 default group tacacs+ none
+aaa accounting exec default start-stop group tacacs+
+aaa accounting commands 0 default start-stop group tacacs+
+aaa accounting commands 1 default start-stop group tacacs+
+aaa accounting commands 15 default start-stop group tacacs+
+aaa accounting network default start-stop group tacacs+
+aaa accounting connection default start-stop group tacacs+
+aaa accounting system default start-stop group tacacs+
+!
+!
+!
+!
+!
+aaa session-id common
+clock timezone AEDT 10 0
+clock summer-time AEST recurring 1 Sun Oct 2:00 1 Sun Apr 3:00
+network-clock-participate wic 0
+network-clock-participate wic 1
+network-clock-select 1 BRI0/0/0
+network-clock-select 2 BRI0/1/0
+!
+ip cef
+!
+!
+!
+!
+!
+!
+ip flow-cache timeout active 1
+ip domain name hearing.net
+ip wccp source-interface Loopback0
+ip wccp 100 redirect-list WCCP_REDIRECT_ACL
+no ipv6 cef
+multilink bundle-name authenticated
+!
+!
+!
+!
+isdn switch-type basic-net3
+!
+!
+!
+voice-card 0
+ codec complexity medium
+ dspfarm
+ dsp services dspfarm
+!
+!
+voice call send-alert
+voice rtp send-recv
+!
+voice service pots
+!
+voice service voip
+ fax protocol t38 version 0 ls-redundancy 0 hs-redundancy 0 fallback none
+!
+voice class codec 1
+ codec preference 1 g711ulaw
+ codec preference 2 g711alaw
+ codec preference 3 g729r8
+!
+voice class h323 1
+  h225 timeout tcp establish 3
+!
+!
+!
+!
+voice translation-rule 110
+ rule 1 /8448/ /2/
+!
+voice translation-rule 120
+ rule 1 /^\([2-6]\)\(........\)$/ /00\1\2/
+ rule 2 /^\([7-8]\)\(........\)$/ /00\1\2/
+ rule 3 /\(.*\)/ /0\1/
+!
+voice translation-rule 130
+ rule 1 /^\(55[7-9]\)\(..\)$/ /0029555\1\2/
+ rule 2 /^29999$/ /01800555555/
+!
+!
+voice translation-profile SRST_IN
+ translate calling 110
+ translate called 130
+!
+voice translation-profile SRST_OUT
+ translate calling 120
+!
+!
+!
+license udi pid CISCO2951/K9 sn XXXXXXXXX
+license accept end user agreement
+license boot module c2951 technology-package uck9
+hw-module pvdm 0/0
+!
+hw-module pvdm 0/1
+!
+hw-module sm 1
+!
+hw-module sm 2
+!
+!
+!
+vtp mode transparent
+username SWEETLING privilege 15 secret 4 4ascfbPzSYldsojnac
+!
+redundancy
+!
+!
+vlan 100
+ name INWARDS
+!
+!
+class-map match-any QOS_SIGNALLING
+ match protocol sip
+ match protocol mgcp
+ match protocol capwap
+ match access-group name QOS_UCCX
+ match ip dscp af31
+class-map match-any QOS_MGMT
+ match protocol ssh
+class-map match-any QOS_VIDEO_RTP
+ match protocol rtp video
+ match ip dscp af41
+class-map match-any QOS_VOICE_RTP
+ match protocol rtp audio
+ match ip dscp ef
+class-map match-any QOS_ROUTING
+ match protocol eigrp
+ match ip dscp cs6
+class-map match-any QOS_APPS
+ match protocol citrix
+!
+policy-map QOS_CATEGORIES
+ class QOS_VOICE_RTP
+  priority percent 20
+  set ip dscp ef
+ class QOS_ROUTING
+  bandwidth percent 1
+  set ip dscp cs6
+ class QOS_MGMT
+  bandwidth percent 1
+  set ip dscp cs5
+ class QOS_APPS
+  bandwidth percent 40
+  set ip dscp af41
+ class QOS_VIDEO_RTP
+  bandwidth percent 25
+  set ip dscp af31
+ class QOS_SIGNALLING
+  bandwidth percent 5
+  set ip dscp af31
+ class class-default
+  set ip dscp default
+  fair-queue
+  random-detect
+!
+policy-map QOS_SCHEDULER_OUT
+ class class-default
+  shape average percent 100
+   service-policy QOS_CATEGORIES
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 10.10.10.10 255.255.255.255
+ ip flow ingress
+ h323-gateway voip interface
+ h323-gateway voip bind srcaddr 10.10.10.10
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ service-module enable
+!
+interface GigabitEthernet0/0
+ description ** WAN Link **
+ bandwidth 10000
+ ip address 172.16.200.2 255.255.255.252
+ ip accounting output-packets
+ ip wccp 100 redirect in
+ ip nbar protocol-discovery ipv4
+ ip flow ingress
+ ip flow egress
+ load-interval 30
+ duplex full
+ speed 100
+ service-policy output QOS_SCHEDULER_OUT
+!
+interface GigabitEthernet0/1
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+ no ip address
+ duplex auto
+ speed auto
+!
+interface BRI0/0/0
+ no ip address
+ no logging event link-status
+ no snmp trap link-status
+ isdn switch-type basic-net3
+ isdn overlap-receiving
+ isdn point-to-point-setup
+ isdn incoming-voice voice
+ isdn sending-complete
+ isdn static-tei 0
+!
+interface BRI0/0/1
+ no ip address
+ no logging event link-status
+ no snmp trap link-status
+ isdn switch-type basic-net3
+ isdn overlap-receiving
+ isdn point-to-point-setup
+ isdn incoming-voice voice
+ isdn sending-complete
+ isdn static-tei 0
+!
+interface GigabitEthernet1/0
+ ip address 1.1.1.1 255.255.255.252
+!
+interface GigabitEthernet1/1
+ description to TESTSW01
+ switchport access vlan 100
+ no ip address
+!
+interface SM2/0
+ ip address 10.10.100.1 255.255.255.0
+ ip wccp redirect exclude in
+ service-module heartbeat-reset disable
+ service-module ip address 10.10.100. 255.255.255.0
+ !Application: VMware ESXi 5.1.0 build-1065491 running on SRE
+ service-module ip default-gateway 10.10.100.1
+!
+interface SM2/1
+ description Internal switch interface connected to Service Module
+ switchport mode trunk
+ no ip address
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan100
+ ip address 10.10.50.17 255.255.255.248
+ ip wccp 100 redirect in
+!
+router bgp 65534
+ bgp router-id 10.10.10.10
+ bgp log-neighbor-changes
+ network 10.10.100.0 mask 255.255.255.255
+ network 10.10.200.0 mask 255.255.255.0
+ network 10.10.50.16 mask 255.255.255.248
+ network 10.10.10.10 mask 255.255.255.255
+ redistribute static
+ neighbor 172.16.200.1 remote-as 65419
+ neighbor 172.16.200.1 soft-reconfiguration inbound
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+ip flow-export source Loopback0
+ip flow-export version 9 origin-as
+ip flow-export destination 192.168.1.1 2055
+!
+ip route 10.20.30.0 255.255.255.0 10.255.1.1
+ip tacacs source-interface Loopback0
+!
+ip access-list extended WCCP_REDIRECT_ACL
+ deny   tcp 10.50.10.0 0.0.0.255 any
+ deny   tcp any 10.50.10.0 0.0.0.255
+ deny   tcp 10.10.50.0 0.0.0.7 any
+ deny   tcp any 10.10.50.0 0.0.0.7
+ permit tcp 10.50.60.0 0.0.0.255 any
+ permit tcp any 10.50.60.0 0.0.0.255
+!
+logging trap debugging
+logging source-interface Loopback0
+logging host 192.168.1.1
+access-list 999 permit 192.168.1.1
+access-list 999 permit 10.1.14.80
+!
+nls resp-timeout 1
+cpd cr-id 1
+!
+snmp-server community COMMUNIST RO 999
+snmp-server ifindex persist
+snmp-server trap-source Loopback0
+snmp-server queue-limit notification-host 25
+snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart
+snmp-server enable traps tty
+snmp-server enable traps entity-sensor threshold
+snmp-server enable traps config-copy
+snmp-server enable traps config
+snmp-server enable traps frame-relay multilink bundle-mismatch
+snmp-server enable traps cpu threshold
+snmp-server host 192.168.2.2 c1sc0w0rks  snmp
+tacacs-server host 192.168.3.3
+tacacs-server host 192.168.4.4
+tacacs-server key BACKDOOR
+!
+!
+!
+control-plane
+!
+!
+voice-port 0/0/0
+ disc_pi_off
+ compand-type a-law
+ cptone AU
+!
+voice-port 0/0/1
+ disc_pi_off
+ compand-type a-law
+ cptone AU
+!
+voice-port 0/1/0
+ disc_pi_off
+ compand-type a-law
+ cptone AU
+!
+voice-port 0/1/1
+ disc_pi_off
+ compand-type a-law
+ cptone AU
+!
+voice-port 0/2/0
+ disc_pi_off
+ no vad
+ compand-type a-law
+ cptone AU
+ station-id number 88888888
+ caller-id enable
+!
+voice-port 0/2/1
+ !
+ !
+ !
+!
+!
+!
+mgcp profile default
+!
+sccp local Loopback0
+sccp ccm 192.168.5.5 identifier 1 version 7.0
+sccp ccm 192.168.5.6 identifier 2 version 7.0
+sccp
+!
+sccp ccm group 1
+ bind interface Loopback0
+ associate ccm 1 priority 1
+ associate ccm 2 priority 2
+ associate profile 1 register TST-XCODE
+ associate profile 2 register TST-CFB
+ keepalive retries 8
+ switchover method immediate
+ switchback method immediate
+ switchback interval 15
+!
+dspfarm profile 1 transcode
+ codec g711ulaw
+ codec g711alaw
+ codec g729ar8
+ codec g729abr8
+ maximum sessions 50
+ associate application SCCP
+!
+dspfarm profile 2 conference
+ codec g711ulaw
+ codec g711alaw
+ codec g729ar8
+ codec g729abr8
+ maximum sessions 17
+ associate application SCCP
+!
+dial-peer voice 100 voip
+ description CallManager
+ preference 1
+ destination-pattern 999999..
+ session target ipv4:192.168.5.5
+ incoming called-number .
+ voice-class codec 1
+ voice-class h323 1
+ dtmf-relay h245-alphanumeric
+ fax-relay ecm disable
+ fax rate disable
+ no vad
+!
+dial-peer voice 101 voip
+ description CallManager
+ preference 2
+ destination-pattern 999999..
+ session target ipv4:192.168.5.6
+ incoming called-number .
+ voice-class codec 1
+ voice-class h323 1
+ dtmf-relay h245-alphanumeric
+ fax-relay ecm disable
+ fax rate disable
+ no vad
+!
+dial-peer voice 10 pots
+ description PSTN
+ destination-pattern 0.T
+ progress_ind setup enable 3
+ progress_ind alert enable 8
+ incoming called-number .
+ direct-inward-dial
+ port 0/0/0
+!
+dial-peer voice 11 pots
+ description PSTN
+ destination-pattern 0.T
+ progress_ind setup enable 3
+ progress_ind alert enable 8
+ incoming called-number .
+ direct-inward-dial
+ port 0/1/0
+!
+dial-peer voice 88888888 pots
+ destination-pattern 88888888
+ port 0/2/0
+!
+!
+!
+!
+gatekeeper
+ shutdown
+!
+!
+call-manager-fallback
+ secondary-dialtone 0
+ max-conferences 4 gain -6
+ transfer-system full-consult
+ ip source-address 10.10.10.10 port 2000
+ max-ephones 12
+ max-dn 48 dual-line
+ system message primary Call 01800555555
+ system message secondary Call 01800555555
+ dialplan-pattern 1 8448882.. extension-length 5 extension-pattern 999..
+ transfer-pattern 0.T
+ no huntstop
+ translation-profile incoming SRST_IN
+ translation-profile outgoing SRST_OUT
+ time-zone 24
+ date-format dd-mm-yy
+!
+!
+banner login ^C
+In  no  event  shall  the  author(s)  be  liable  for  any  found  errors  contained  herein  or  for  any
+direct,  indirect,  special,  incidental  or  consequential  damages  (including  lost  profit  or  lost
+data) whether based on warranty, contract, tort, or any other legal theory in connection with
+the furnishing, performance, or use of this material.
+^C
+!
+!
+banner motd ^C
+Documentation  pertaining  to  any  security-related  technical  or  proprietary  information,  its
+    data  and  all  information  provided  and  contained  within  this  document  is  considered
+    proprietary in nature and subject to copyright protection and is intended solely for use by its
+    owner.    Additionally,  this  documentation  is  solely  for  the  purpose  of  discussing  a  possible,
+    and/or  proposed  IT  security  issue,  and  is  not  dependent  upon  any  specified  infrastructure,
+architectural condition or its issue(s).
+^C
+!
+!
+banner incoming ^C
+All other product names mentioned herein are trademarks or registered trademarks of their
+respective  owners.    NOTE:  Any  names  not  outlined  or  mentioned  above  are  fictional  in
+nature; as such, any relation to any name or trademark (if any) is purely coincidental.
+^C
+!
+!
+line con 0
+ location Test Network
+ privilege level 15
+ logging synchronous
+ login authentication CONSOLE
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ transport input telnet ssh
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line 67
+ no activation-character
+ no exec
+ transport preferred none
+ transport input all
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+ flowcontrol software
+line 131
+ no activation-character
+ no exec
+ transport preferred none
+ transport input all
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ location Test Network
+ privilege level 15
+ logging synchronous
+ login authentication TACACS
+ transport input ssh
+ transport output telnet ssh
+line vty 5 15
+ location Test Network
+ privilege level 15
+ logging synchronous
+ login authentication TACACS
+ transport input ssh
+ transport output ssh
+!
+scheduler allocate 20000 1000
+ntp source Loopback0
+ntp server ntp.mcfly.com
+ntp server ntp.time.com prefer
+!
+end
