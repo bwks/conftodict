@@ -39,8 +39,10 @@ class ConfToDict(object):
                 # Just config, remove trailing new lines, !
                 config = []
                 for i in full_config:
-                    if not (i.startswith('!') or i.startswith(' !\n') or i.startswith('\n')):
-                        config.append(i.replace('\n', ''))
+                    if not (i.startswith('!') or
+                            i.startswith(' !{0}'.format(self.delimiter)) or
+                            i.startswith(self.delimiter)):
+                        config.append(i.replace(self.delimiter, ''))
 
             self.config = config
 
