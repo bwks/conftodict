@@ -13,7 +13,8 @@ def search_dict(dict_list, dict_key, value_list):
 
     Example Usage:
     >>> from conftodict import ConfToDict
-    >>> c = ConfToDict('../test.txt', from_file=True)
+    >>> from configaudit import search_dict
+    >>> c = ConfToDict('tests/test.txt', from_file=True)
     >>> stuff = c.to_dict()
     >>> things = ['priority percent 20', 'set ip dscp ef']
     >>> search_dict(stuff['policy-map QOS_CATEGORIES'], 'class QOS_VOICE_RTP', things)
@@ -30,6 +31,6 @@ def search_dict(dict_list, dict_key, value_list):
             if not_found:
                 return False, not_found, 'dict_value'
             else:
-                return True
+                return True, 'all values found'
         else:
             return False, dict_key, 'dict_key'
