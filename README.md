@@ -10,7 +10,7 @@ c = ConfToDict('tests/test.txt', from_file=True)
 stuff = c.to_dict()
 things = ['priority percent 20', 'set ip dscp ef']
 
-config = search_dict(stuff['policy-map QOS_CATEGORIES'], 'class QOS_VOICE_RTP', things)
-config.ok
+blah = search_dict(stuff['policy-map QOS_CATEGORIES'], 'class QOS_VOICE_RTP', things)
+blah.ok
 True
 ```

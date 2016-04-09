@@ -21,11 +21,18 @@ class AuditResult(object):
 
 def search_dict(dict_list, dict_key, value_list):
     """
-    A list of dictionaries to search for values
+    Search a list of dictionaries for dict values
+    # level 0 < dict_list
+    #  level 1 < dict_key
+    #   level 2 < [search for these values,
+    #   level 2 < search for these values]
+    #  level 1
+    #   level 2
+    #   level 2
     :param dict_list: A list of dictionaries
     :param dict_key: The key to search for in dict_list
     :param value_list: List of values to check for
-    :return: something
+    :return: AuditResult object
 
     Example Usage:
     >>> from conftodict import ConfToDict
@@ -33,8 +40,8 @@ def search_dict(dict_list, dict_key, value_list):
     >>> c = ConfToDict('tests/test.txt', from_file=True)
     >>> stuff = c.to_dict()
     >>> things = ['priority percent 20', 'set ip dscp ef']
-    >>> config = search_dict(stuff['policy-map QOS_CATEGORIES'], 'class QOS_VOICE_RTP', things)
-    >>> config.ok
+    >>> blah = search_dict(stuff['policy-map QOS_CATEGORIES'], 'class QOS_VOICE_RTP', things)
+    >>> blah.ok
     >>> True
     """
     found = []
@@ -61,3 +68,24 @@ def search_dict(dict_list, dict_key, value_list):
                 return AuditResult(ok=True)
         else:
             return AuditResult(ok=False, missing=dict_key, error='key not found')
+
+
+def search_zero_level(conf_dict, conf_list):
+    """
+    Search the zero level dict keys for a list of commands
+    :param conf_dict: Dictionary of config
+    :param conf_list: List of zero level commands to search for
+    :return: AuditResult object
+    """
+    found = [i for i in conf_dict if i not in conf_list]
+    not_found = [i for i in conf_list if i not in conf_dict]
+
+    if not_found and not found:
+        return AuditResult(ok=False, missing=not_found, error='key(s) not found')
+    elif found and not not_found:
+        return AuditResult(ok=False, extra=found, error='extra key(s) found')
+    elif found and not_found:
+        return AuditResult(ok=False, extra=found, missing=not_found,
+                           error='extra key(s) and key(s) not found')
+    else:
+        return AuditResult(ok=True)
