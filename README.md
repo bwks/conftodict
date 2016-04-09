@@ -1,5 +1,6 @@
 # conftodict
 Python module to convert Cisco IOS config to a python dictionary
+Built and tested with Python 3. Python 2 not tested at this time
 
 ###Example Usage:
 ```python
