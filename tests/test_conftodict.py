@@ -72,10 +72,10 @@ class TestConfToDict(unittest.TestCase):
         for i in self.sc.config:
             self.assertIsNot(i, (i.startswith('!') or i == ' !' or i == ''))
 
-    def test_three_level_hierarchy_contains_list_for_second_level(self):
+    def test_three_level_hierarchy_contains_dict_for_second_level(self):
         from ..conftodict import ConfToDict
         self.three_level = ConfToDict(three_level)
         conf_dict = self.three_level.to_dict()
 
-        self.assertIsInstance(conf_dict['policy-map QOS_CATEGORIES'], list)
+        self.assertIsInstance(conf_dict['policy-map QOS_CATEGORIES'], dict)
 
