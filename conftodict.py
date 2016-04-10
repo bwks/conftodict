@@ -203,10 +203,10 @@ class ConfToDict(object):
                         #   level 2
                         #   level 2
                         #
-                        # output: {level 0: [
-                        #               {level 1: [level 2, level 2]},
-                        #               {level 1: [level 2, level 2]}
-                        #               ]}
+                        # output: {level 0:
+                        #             {level 1: [level 2, level 2]},
+                        #             {level 1: [level 2, level 2]}
+                        #         }
                         all_children = []
                         for j in first_level_children:
                             next_element = first_level_children.index(j) + 1
@@ -221,6 +221,9 @@ class ConfToDict(object):
                                     if j[0] < k[0] < first_level_children[next_element][0]:
                                         children.append(k[1])
                             all_children.append({j[1]: children})
-                        conf_dict.update({i[1]: all_children})
+
+                        conf_dict.update({i[1]: {}})
+                        for j in all_children:
+                            conf_dict[i[1]].update(j)
 
         return conf_dict
