@@ -96,7 +96,7 @@ def search_key(conf_dict, key):
     """
     Search dict for a single key
     :param conf_dict: DICTIONARY of config
-    :param key: STRING or INT to search for
+    :param key: STRING to search for
     :return: AuditResult object
     """
     if key in conf_dict:
@@ -140,7 +140,7 @@ def search_value(dict_key, value):
     """
     Search dict_key's values for a single value
     :param dict_key: List of config
-    :param value: STRING or INT to search for
+    :param value: STRING to search for
     :return: AuditResult object
     """
     if value in dict_key:
