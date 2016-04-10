@@ -5,7 +5,7 @@ which will be very fast to perform config auditing against.
 
 Note: Config must be in the same format as it is from a show run
 
-version: 0.1.5
+version: 0.1.6
 TO-DO: - Building test suite and work on edge cases
        - Update to work with config with more than one space
          between parent/child elements # Done need tests
