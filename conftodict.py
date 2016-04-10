@@ -78,7 +78,7 @@ class ConfToDict(object):
         """
         conf_dict = {}
 
-        # Find lines with banners and remove them from the config list
+        # Find lines with banners and add them to the conf_dict
         banners = []
 
         # Find start of banner
