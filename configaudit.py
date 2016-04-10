@@ -7,11 +7,11 @@ Functions for performing config audit
 class AuditResult(object):
     def __init__(self, ok=False, missing=None, extra=None, error=None):
         """
-        Helper class to return result
+        Helper class to return result object
         :param ok: True/False
         :param missing: Missing entries
         :param extra: Extra entries
-        :param error: Error value
+        :param error: Error string
         """
         self.ok = ok
         self.missing = missing
@@ -19,7 +19,7 @@ class AuditResult(object):
         self.error = error
 
 
-def search_dict(dict_list, dict_key, value_list):
+def search_dict_list(dict_list, dict_key, value_list):
     """
     Search a list of dictionaries for dict values
     # level 0 < dict_list
@@ -29,9 +29,10 @@ def search_dict(dict_list, dict_key, value_list):
     #  level 1
     #   level 2
     #   level 2
-    :param dict_list: A list of dictionaries
+
+    :param dict_list: A LIST of DICTIONARIES
     :param dict_key: The key to search for in dict_list
-    :param value_list: List of values to check for
+    :param value_list: LIST of values to check for
     :return: AuditResult object
 
     Example Usage:
@@ -40,7 +41,7 @@ def search_dict(dict_list, dict_key, value_list):
     >>> c = ConfToDict('tests/test.txt', from_file=True)
     >>> stuff = c.to_dict()
     >>> things = ['priority percent 20', 'set ip dscp ef']
-    >>> blah = search_dict(stuff['policy-map QOS_CATEGORIES'], 'class QOS_VOICE_RTP', things)
+    >>> blah = search_dict_list(stuff['policy-map QOS_CATEGORIES'], 'class QOS_VOICE_RTP', things)
     >>> blah.ok
     >>> True
     """
@@ -70,11 +71,11 @@ def search_dict(dict_list, dict_key, value_list):
             return AuditResult(ok=False, missing=dict_key, error='key not found')
 
 
-def search_zero_level(conf_dict, conf_list):
+def search_keys(conf_dict, conf_list):
     """
     Search the zero level dict keys for a list of commands
-    :param conf_dict: Dictionary of config
-    :param conf_list: List of zero level commands to search for
+    :param conf_dict: DICTIONARY of config
+    :param conf_list: LIST of zero level commands to search for
     :return: AuditResult object
     """
     found = [i for i in conf_dict if i not in conf_list]
@@ -87,5 +88,36 @@ def search_zero_level(conf_dict, conf_list):
     elif found and not_found:
         return AuditResult(ok=False, extra=found, missing=not_found,
                            error='extra key(s) and key(s) not found')
+    else:
+        return AuditResult(ok=True)
+
+
+def search_values(dict_key, conf_list):
+    """
+    Search a dict_key values for a list of commands
+    # Examples:
+    # level 0 < dict_key
+    #  level 1 < [search for these values,
+    #  level 1 < search for these values]
+
+    # level 0
+    #  level 1 < dict_key
+    #   level 2 < [search for these values,
+    #   level 2 < search for these values]
+
+    :param dict_key: LIST of Dictionary Key
+    :param conf_list: LIST of commands to search for
+    :return: AuditResult object
+    """
+    found = [i for i in dict_key if i not in conf_list]
+    not_found = [i for i in conf_list if i not in dict_key]
+
+    if not_found and not found:
+        return AuditResult(ok=False, missing=not_found, error='value(s) not found')
+    elif found and not not_found:
+        return AuditResult(ok=False, extra=found, error='extra value(s) found')
+    elif found and not_found:
+        return AuditResult(ok=False, extra=found, missing=not_found,
+                           error='extra value(s) and value(s) not found')
     else:
         return AuditResult(ok=True)
