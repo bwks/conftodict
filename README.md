@@ -5,13 +5,13 @@ Built and tested with Python 3. Python 2 not tested at this time
 ###Example Usage:
 ```python
 from conftodict import ConfToDict
-from configaudit import search_dict
+from configaudit import search_dict_list
 
 c = ConfToDict('tests/test.txt', from_file=True)
 stuff = c.to_dict()
 things = ['priority percent 20', 'set ip dscp ef']
 
-blah = search_dict(stuff['policy-map QOS_CATEGORIES'], 'class QOS_VOICE_RTP', things)
+blah = search_dict_list(stuff['policy-map QOS_CATEGORIES'], 'class QOS_VOICE_RTP', things)
 blah.ok
 True
 ```
