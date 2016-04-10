@@ -92,9 +92,22 @@ def search_keys(conf_dict, conf_list):
         return AuditResult(ok=True)
 
 
+def search_key(conf_dict, key):
+    """
+    Search dict for a single key
+    :param conf_dict: DICTIONARY of config
+    :param key: STRING or INT to search for
+    :return: AuditResult object
+    """
+    if key in conf_dict:
+        return AuditResult(ok=True)
+    else:
+        return AuditResult(ok=False, missing=key, error='key not found')
+
+
 def search_values(dict_key, conf_list):
     """
-    Search a dict_key values for a list of commands
+    Search a dict_key's values for a list of commands
     # Examples:
     # level 0 < dict_key
     #  level 1 < [search for these values,
@@ -121,3 +134,16 @@ def search_values(dict_key, conf_list):
                            error='extra value(s) and value(s) not found')
     else:
         return AuditResult(ok=True)
+
+
+def search_value(dict_key, value):
+    """
+    Search dict_key's values for a single value
+    :param dict_key: List of config
+    :param value: STRING or INT to search for
+    :return: AuditResult object
+    """
+    if value in dict_key:
+        return AuditResult(ok=True)
+    else:
+        return AuditResult(ok=False, missing=value, error='value not found')
