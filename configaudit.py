@@ -37,7 +37,7 @@ def search_dict_list(dict_list, dict_key, value_list):
 
     Example Usage:
     >>> from conftodict import ConfToDict
-    >>> from configaudit import search_dict
+    >>> from configaudit import search_dict_list
     >>> c = ConfToDict('tests/test.txt', from_file=True)
     >>> stuff = c.to_dict()
     >>> things = ['priority percent 20', 'set ip dscp ef']
@@ -73,9 +73,9 @@ def search_dict_list(dict_list, dict_key, value_list):
 
 def search_keys(conf_dict, conf_list):
     """
-    Search the zero level dict keys for a list of commands
+    Search dict keys for a list of commands
     :param conf_dict: DICTIONARY of config
-    :param conf_list: LIST of zero level commands to search for
+    :param conf_list: LIST of keys to search for
     :return: AuditResult object
     """
     found = [i for i in conf_dict if i not in conf_list]
@@ -105,7 +105,7 @@ def search_values(dict_key, conf_list):
     #   level 2 < [search for these values,
     #   level 2 < search for these values]
 
-    :param dict_key: LIST of Dictionary Key
+    :param dict_key: LIST from dictionary key
     :param conf_list: LIST of commands to search for
     :return: AuditResult object
     """
