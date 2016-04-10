@@ -1,6 +1,39 @@
 """
 Functions for performing config audit
 - Currently no tests
+
+Example Usage:
+>>> from conftodict import ConfToDict
+>>> from configaudit import search_keys, search_values
+>>>
+>>> c = ConfToDict('tests/test.txt', from_file=True)
+>>> config = c.to_dict()
+>>>
+>>> commands = ['voice rtp send-recv', 'sccp local Loopback0', 'voice service voip']
+>>> result = search_keys(config, commands)
+>>>
+>>> result.ok
+>>> False
+>>>
+>>> result.error
+>>> 'extra key(s) found'
+>>>
+>>> result.extra
+>>> ['interface GigabitEthernet1/0',
+>>>  'mgcp profile default',
+>>>  'line vty 5 15',
+>>>  'voice class codec 1',
+>>>  'service password-encryption',
+>>>  'ip cef',
+>>>  'dspfarm profile 2 conference',
+>>>  'interface Vlan1',
+>>>  ...]
+>>>
+>>> commands = ['no ip address', 'shutdown', 'duplex auto', 'speed auto']
+>>> result = search_values(config['interface GigabitEthernet0/1'], commands)
+>>>
+>>> result.ok
+>>> True
 """
 
 
@@ -17,58 +50,6 @@ class AuditResult(object):
         self.missing = missing
         self.extra = extra
         self.error = error
-
-
-def search_dict_list(dict_list, dict_key, value_list):
-    """
-    Search a list of dictionaries for dict values
-    # level 0 < dict_list
-    #  level 1 < dict_key
-    #   level 2 < [search for these values,
-    #   level 2 < search for these values]
-    #  level 1
-    #   level 2
-    #   level 2
-
-    :param dict_list: A LIST of DICTIONARIES
-    :param dict_key: The key to search for in dict_list
-    :param value_list: LIST of values to check for
-    :return: AuditResult object
-
-    Example Usage:
-    >>> from conftodict import ConfToDict
-    >>> from configaudit import search_dict_list
-    >>> c = ConfToDict('tests/test.txt', from_file=True)
-    >>> stuff = c.to_dict()
-    >>> things = ['priority percent 20', 'set ip dscp ef']
-    >>> blah = search_dict_list(stuff['policy-map QOS_CATEGORIES'], 'class QOS_VOICE_RTP', things)
-    >>> blah.ok
-    >>> True
-    """
-    found = []
-    not_found = []
-    for i in dict_list:
-        if dict_key in i:
-            # Check for missing values
-            for j in value_list:
-                if j not in i[dict_key]:
-                    not_found.append(j)
-            # Check for extra values
-            for j in i[dict_key]:
-                if j not in value_list:
-                    found.append(j)
-
-            if not_found and not found:
-                return AuditResult(ok=False, missing=not_found, error='value(s) not found')
-            elif found and not not_found:
-                return AuditResult(ok=False, extra=found, error='extra value(s) found')
-            elif found and not_found:
-                return AuditResult(ok=False, extra=found, missing=not_found,
-                                   error='extra value(s) and value(s) not found')
-            else:
-                return AuditResult(ok=True)
-        else:
-            return AuditResult(ok=False, missing=dict_key, error='key not found')
 
 
 def search_keys(conf_dict, conf_list):
