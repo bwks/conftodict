@@ -99,7 +99,11 @@ def search_key(conf_dict, key):
     :param key: STRING to search for
     :return: AuditResult object
     """
-    if key in conf_dict:
+    if not isinstance(conf_dict, dict):
+        raise ValueError('{0} is not a dictionary'.format(conf_dict))
+    elif not isinstance(key, str):
+        raise ValueError('{0} is not a string'.format(key))
+    elif key in conf_dict:
         return AuditResult(ok=True)
     else:
         return AuditResult(ok=False, missing=key, error='key not found')
@@ -143,7 +147,11 @@ def search_value(dict_key, value):
     :param value: STRING to search for
     :return: AuditResult object
     """
-    if value in dict_key:
+    if not isinstance(dict_key, list):
+        raise ValueError('{0} is not a list'.format(dict_key))
+    elif not isinstance(value, str):
+        raise ValueError('{0} is not a string'.format(value))
+    elif value in dict_key:
         return AuditResult(ok=True)
     else:
         return AuditResult(ok=False, missing=value, error='value not found')
