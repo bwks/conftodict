@@ -1,6 +1,7 @@
 # conftodict
 Python module to convert Cisco IOS config to a python dictionary
 Built and tested with Python 3. Python 2 not tested at this time
+It is assumed that the config will be in the same for as show run
 
 ###Installation
 ```bash
@@ -15,15 +16,21 @@ import sys
 sys.path.append('/path/to/conftodict/')
 ```
 
-###Example Usage:
+###Example Usage
 ```python
 from conftodict import ConfToDict
 from configaudit import search_keys, search_values
 
+# Create a config dictionary
 c = ConfToDict('tests/test.txt', from_file=True)
 config = c.to_dict()
 
+# List of commands to check exist
 commands = ['voice rtp send-recv', 'sccp local Loopback0', 'voice service voip']
+
+# configaudit has some helper functions for auditing config
+# helper functions return an AuditResult object
+# Their are helper functions for auditing a list of keys/values or single key/value
 result = search_keys(config, commands)
 
 result.ok
