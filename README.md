@@ -30,7 +30,7 @@ commands = ['voice rtp send-recv', 'sccp local Loopback0', 'voice service voip']
 
 # configaudit has some helper functions for auditing config
 # helper functions return an AuditResult object
-# Their are helper functions for auditing a list of keys/values or single key/value
+# There are helper functions for auditing a list of keys/values or single key/value
 result = search_keys(config, commands)
 
 result.ok
