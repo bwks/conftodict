@@ -2,6 +2,19 @@
 Python module to convert Cisco IOS config to a python dictionary
 Built and tested with Python 3. Python 2 not tested at this time
 
+###Installation
+```bash
+mkdir path/to/ise
+cd path/to/ise
+git clone https://github.com/bobthebutcher/conftodict.git
+```
+
+###Add to path
+```python
+import sys
+sys.path.append('/path/to/conftodict/')
+```
+
 ###Example Usage:
 ```python
 from conftodict import ConfToDict
