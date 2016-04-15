@@ -1,7 +1,33 @@
 # conftodict
 Python module to convert Cisco IOS config to a python dictionary.  
 Built and tested with Python 3. Python 2 not tested at this time.  
-It is assumed that the config will be in the same format as show run output.  
+
+Cisco IOS config is a series of parent and child relationships, IE;  
+```
+!  
+interface Loopback0                         # Parent
+ ip address 10.10.10.10 255.255.255.255      # Child
+ ip flow ingress                             # Child
+ h323-gateway voip interface                 # Child
+ h323-gateway voip bind srcaddr 10.10.10.10  # Child 
+!```
+
+This will be converted into a dictionary with the parent as the key and children a list of values
+```python
+{'interface Loopback0': [                        
+    'ip address 10.10.10.10 255.255.255.255',  
+    'ip flow ingress',                         
+    'h323-gateway voip interface',               
+    'h323-gateway voip bind srcaddr 10.10.10.10',
+    ]
+ ```
+
+Parents with no children will have an empty list for a value
+```python
+{'logging trap debugging': []}
+```
+ 
+Note: It is assumed that the config will be in the same format as show run output.  
 
 ###Installation
 ```bash
