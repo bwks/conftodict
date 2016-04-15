@@ -69,7 +69,7 @@ class ConfToDict(object):
         if self.from_file:
             with open(self.full_config, 'r') as f:
                 full_config = f.readlines()
-                # Just config, remove trailing new lines, !
+                # Just config, remove trailing new lines and '!'
                 config = []
                 for i in full_config:
                     if not (i.startswith('!') or
@@ -111,7 +111,8 @@ class ConfToDict(object):
         """
         conf_dict = {}
 
-        # Find lines with banners and add them to the conf_dict
+        # Banners might have spaces at the beginning of lines.
+        # So.. find banners and add them to the conf_dict.
         banners = []
 
         # Find start of banner
