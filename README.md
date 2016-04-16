@@ -1,8 +1,8 @@
 #conftodict
 Python module to convert Cisco IOS config to a python dictionary.  
-I built this module to help with auditing device configurations.
-Since a dictionary is a hash of key/value pairs its efficient for auditing 
-large sets of configurations.
+I built this module to help with auditing device configurations.  
+Since a dictionary is a hash of key/value pairs its efficient for auditing  
+large sets of configurations.  
 
 Built and tested with Python 3. Python 2 not tested at this time.  
 
