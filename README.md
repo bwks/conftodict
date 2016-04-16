@@ -1,7 +1,12 @@
-# conftodict
+#conftodict
 Python module to convert Cisco IOS config to a python dictionary.  
+I built this module to help with auditing device configurations.
+Since a dictionary is a hash of key/value pairs its efficient for auditing 
+large sets of configurations.
+
 Built and tested with Python 3. Python 2 not tested at this time.  
 
+###Overview
 Cisco IOS config is a series of parent and child relationships, IE;  
 ```
 !  
@@ -20,7 +25,7 @@ This will be converted into a dictionary with the parent as the key and children
     'ip flow ingress',                         
     'h323-gateway voip interface',               
     'h323-gateway voip bind srcaddr 10.10.10.10',
-    ]
+    ]}
  ```
 
 Parents with no children will have an empty list for a value
