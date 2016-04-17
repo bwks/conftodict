@@ -79,7 +79,7 @@ class ConfToDict(object):
 
             self.config = config
 
-        # Clean config with a sting is the input
+        # Clean config with a multi-line string as the input
         else:
             conf_list = self.full_config.split(self.delimiter)
             config = []
