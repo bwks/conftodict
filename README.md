@@ -6,7 +6,6 @@ large sets of configurations.
 
 Built and tested with Python 3. Python 2 not tested at this time. 
 
-Test
 
 ###Overview
 Cisco IOS config is a series of parent and child relationships, IE;  
