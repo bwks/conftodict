@@ -75,7 +75,7 @@ class ConfToDict(object):
                     if not (i.startswith('!') or
                             i.startswith(' !{0}'.format(self.delimiter)) or
                             i.startswith(self.delimiter)):
-                        config.append(i.replace(self.delimiter, ''))
+                        config.append(i.replace(self.delimiter, '').rstrip())
 
             self.config = config
 
@@ -85,7 +85,7 @@ class ConfToDict(object):
             config = []
             for i in conf_list:
                 if not (i.startswith('!') or i == ' !' or i == ''):
-                    config.append(i)
+                    config.append(i.rstrip())
 
             self.config = config
 
@@ -134,7 +134,7 @@ class ConfToDict(object):
             conf_dict.update({'\n'.join([j for j in self.config[i[0]:i[1] + 1]]): []})
 
         # List holds a range of banner line numbers
-        banner_list = [i for j in [range(k[0], k[1] + 2) for k in banners] for i in j]
+        banner_list = [i for j in [range(k[0], k[1] + 1) for k in banners] for i in j]
 
         numbered_config = [i for i in enumerate(self.config)]
 
