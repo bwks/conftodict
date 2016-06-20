@@ -9,6 +9,7 @@ version: 0.1.6
 TO-DO: - Building test suite and work on edge cases
        - Update to work with config with more than one space
          between parent/child elements # Done need tests
+       - Change banner so that banner X is the key and banner text is the value
 
 Example Usage:
 >>> from conftodict import ConfToDict
@@ -133,7 +134,6 @@ class ConfToDict(object):
 
         # Add banners to conf_dict
         for i in banners:
-            # TODO change this so that banner X is the key and banner text is the value
             conf_dict.update({'\n'.join([j for j in self.config[i[0]:i[1] + 1]]): []})
 
         # List holds a range of banner line numbers
@@ -171,8 +171,11 @@ class ConfToDict(object):
                 if first_level and second_level:
                     if i[0] > first_level[-1][0] and i[0] > second_level[-1][0]:
                         conf_dict.update({i[1]: []})
-                    else:
-                        print('last zero level parent has children')
+                elif first_level:
+                    if i[0] > first_level[-1][0]:
+                        conf_dict.update({i[1]: []})
+                else:
+                    print('last zero level parent has children')
 
             elif zero_level[next_element][0] - zero_level[zero_level.index(i)][0] == 1:
                 # element has no children
