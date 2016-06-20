@@ -119,7 +119,9 @@ class ConfToDict(object):
         for i in self.config:
             if i.startswith('banner'):
                 banner_start = self.config.index(i)
-                terminator = i.split()[-1]
+                # Sometimes an extra terminator is added to eol eg: ^CC instead of ^C
+                # Why? Who fucking knows but adding [:2] below to compensate
+                terminator = i.split()[-1][:2]
 
                 # Find end of banner
                 sentinel = banner_start + 1
@@ -131,6 +133,7 @@ class ConfToDict(object):
 
         # Add banners to conf_dict
         for i in banners:
+            # TODO change this so that banner X is the key and banner text is the value
             conf_dict.update({'\n'.join([j for j in self.config[i[0]:i[1] + 1]]): []})
 
         # List holds a range of banner line numbers
@@ -165,10 +168,11 @@ class ConfToDict(object):
             next_element = zero_level.index(i) + 1
             if next_element == len(zero_level):
                 # end of top level parents
-                if i[0] > first_level[-1][0] and i[0] > second_level[-1][0]:
-                    conf_dict.update({i[1]: []})
-                else:
-                    print('last zero level parent has children')
+                if first_level and second_level:
+                    if i[0] > first_level[-1][0] and i[0] > second_level[-1][0]:
+                        conf_dict.update({i[1]: []})
+                    else:
+                        print('last zero level parent has children')
 
             elif zero_level[next_element][0] - zero_level[zero_level.index(i)][0] == 1:
                 # element has no children
